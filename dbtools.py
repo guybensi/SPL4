@@ -1,18 +1,35 @@
 import inspect
 
+#given function
 
+#def orm(cursor, dto_type):
+ #   # the following line retrieve the argument names of the constructor
+  #  args = inspect.getargspec(dto_type.__init__).args
+#
+ #   # the first argument of the constructor will be 'self', it does not correspond
+    # to any database field, so we can ignore it.
+  #  args = args[1:]
+
+    # gets the names of the columns returned in the cursor
+   # col_names = [column[0] for column in cursor.description]
+
+    # map them into the position of the corresponding constructor argument
+    #col_mapping = [col_names.index(arg) for arg in args]
+    #return [row_map(row, col_mapping, dto_type) for row in cursor.fetchall()]
+
+#updated function
 def orm(cursor, dto_type):
-    # the following line retrieve the argument names of the constructor
-    args = inspect.getargspec(dto_type.__init__).args
+    # Retrieve the argument names of the constructor using inspect.signature
+    args = list(inspect.signature(dto_type.__init__).parameters.keys())
 
-    # the first argument of the constructor will be 'self', it does not correspond
+    # The first argument of the constructor will be 'self', it does not correspond
     # to any database field, so we can ignore it.
     args = args[1:]
 
-    # gets the names of the columns returned in the cursor
+    # Get the names of the columns returned in the cursor
     col_names = [column[0] for column in cursor.description]
 
-    # map them into the position of the corresponding constructor argument
+    # Map them into the position of the corresponding constructor argument
     col_mapping = [col_names.index(arg) for arg in args]
     return [row_map(row, col_mapping, dto_type) for row in cursor.fetchall()]
 
@@ -66,3 +83,17 @@ class Dao(object):
                .format(self._table_name,' AND '.join([col + '=?' for col in column_names]))
  
         self._conn.cursor().execute(stmt, params)
+    #our method
+    def update(self, dto_instance):
+        ins_dict = vars(dto_instance)
+
+        # Build the SET part of the query, excluding 'id'
+        set_clause = ', '.join([f"{key}=?" for key in ins_dict.keys() if key != 'id'])
+        params = [ins_dict[key] for key in ins_dict.keys() if key != 'id']
+
+        # Add the id for the WHERE clause
+        params.append(ins_dict['id'])
+
+        # Create the UPDATE statement
+        stmt = f'UPDATE {self._table_name} SET {set_clause} WHERE id=?'
+        self._conn.execute(stmt, params)
