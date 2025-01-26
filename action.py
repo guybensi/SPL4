@@ -7,14 +7,12 @@ def process_action(splittedline):
     quantity = int(splittedline[1])
     activator_id = int(splittedline[2])
     date = splittedline[3]
-
     # Retrieve the product
     product = repo.products.find(id=product_id)
     if not product:
         return
-
+    
     product = product[0]
-
     if quantity < 0:  # Sale
         if product.quantity + quantity < 0:
             return
@@ -25,13 +23,10 @@ def process_action(splittedline):
 
     # Update the product quantity in the database
     repo.products.update(product)
-
     # Insert the activity
     activity = Activitie(product_id=product_id, quantity=quantity, activator_id=activator_id, date=date)
     repo.activities.insert(activity)
     repo._conn.commit()
-
-
 
 def main(args : list[str]):
     inputfilename : str = args[1]
