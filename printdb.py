@@ -9,7 +9,8 @@ def print_activities():
     """
     results = repo.execute_command(query)
     for row in results:
-        print(f"({row[0]}, {row[1]}, {row[2]}, '{row[3]}')")
+        activity = Activitie(*row) 
+        print(activity) 
 
 def print_branches():
     """Print the branches table ordered by ID."""
@@ -20,7 +21,8 @@ def print_branches():
     """
     results = repo.execute_command(query)
     for row in results:
-        print(f"({row[0]}, '{row[1]}', {row[2]})")
+        branch = Branche(*row) 
+        print(branch) 
 
 def print_employees():
     """Print the employees table ordered by ID."""
@@ -31,7 +33,8 @@ def print_employees():
     """
     results = repo.execute_command(query)
     for row in results:
-        print(f"({row[0]}, '{row[1]}', {row[2]}, {row[3]})")
+        emloyee = Employee(*row) 
+        print(emloyee)
 
 def print_products():
     """Print the products table ordered by ID."""
@@ -42,7 +45,8 @@ def print_products():
     """
     results = repo.execute_command(query)
     for row in results:
-        print(f"({row[0]}, '{row[1]}', {row[2]}, {row[3]})")
+        product = Product(*row)
+        print(product)
 
 def print_suppliers():
     """Print the suppliers table ordered by ID."""
@@ -53,7 +57,8 @@ def print_suppliers():
     """
     results = repo.execute_command(query)
     for row in results:
-        print(f"({row[0]}, '{row[1]}', '{row[2]}')")
+        supplier = Supplier(*row)
+        print(supplier)
 
 def print_employee_report():
     """Print a detailed employee report ordered by name."""
